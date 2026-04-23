@@ -1,0 +1,13 @@
+train: C:\Users\ASUS\vs\mini_codeing\mini2\train\images
+val: C:\Users\ASUS\vs\mini_codeing\mini2\valid\images
+test: C:\Users\ASUS\vs\mini_codeing\mini2\test\images
+
+nc: 2
+names: ['bottle', 'glass']
+
+roboflow:
+  workspace: narawit-v2z8p
+  project: to_human-hffbn
+  version: 3
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/narawit-v2z8p/to_human-hffbn/dataset/3
