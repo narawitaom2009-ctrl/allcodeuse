@@ -1,0 +1,12 @@
+# โหลดpython web:https://www.python.org/downloads/
+
+# {ติดตั้ง pytorch
+# ใช้ command prompt
+# [คำสั้ง cd ตามด้วย ไฟล์dataset 
+# python -m venv venv
+# venv\Scripts\activate.bat]
+# ติดตั้ง pytorch เอาคำสั่งใน WEB:https://pytorch.org/get-started/locally/ 
+# ลักษณะคำสั้ง {!pip install torch torchvision --index-url https://download.pytorch.org/whl/cu126} ]
+
+
+# ติดตั้ง yolo  คำสั้ง pip install ultralytics
