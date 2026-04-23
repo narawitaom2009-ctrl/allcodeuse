@@ -1,0 +1,104 @@
+#include <Wire.h>
+#include <WiFi.h>
+#include "ThingSpeak.h"
+#include <Adafruit_SGP30.h>
+#include "DHT.h"
+
+// -------- WiFi & ThingSpeak -------- //
+char ssid[] = "ohm555";
+char pass[] = "aom2009aom";
+unsigned long myChannelNumber = 3290440;
+const char * myWriteAPIKey = "J0AZR3D9F0JN39DV";
+WiFiClient client;
+
+// -------- SGP30 -------- //
+Adafruit_SGP30 sgp;
+
+// -------- DHT11 -------- //
+#define DHTPIN 15
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+
+  Serial.begin(115200);
+
+  // WiFi
+  WiFi.mode(WIFI_STA);
+  ThingSpeak.begin(client);
+  WiFi.begin(ssid, pass);
+
+  Serial.print("Connecting WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("WiFi connected");
+
+  // SGP30
+  Wire.begin();
+  if (!sgp.begin()) {
+    Serial.println("SGP30 not found");
+    while (1);
+  }
+
+  sgp.IAQinit();
+
+  // DHT11
+  dht.begin();
+
+  delay(2000);
+}
+
+void loop() {
+
+  // -------- อ่าน SGP30 -------- //
+  if (!sgp.IAQmeasure()) {
+    Serial.println("SGP30 error");
+    return;
+  }
+
+  uint16_t tvoc = sgp.TVOC;
+  uint16_t eco2 = sgp.eCO2;
+
+  // -------- อ่าน DHT11 -------- //
+  float humidity = dht.readHumidity();
+  float temperature = dht.readTemperature();
+
+  if (isnan(humidity) || isnan(temperature)) {
+    Serial.println("DHT read error");
+    return;
+  }
+
+  // -------- แสดงผล Serial -------- //
+  Serial.print("TVOC: ");
+  Serial.print(tvoc);
+  Serial.print(" ppb  ");
+
+  Serial.print("eCO2: ");
+  Serial.print(eco2);
+  Serial.print(" ppm  ");
+
+  Serial.print("Temp: ");
+  Serial.print(temperature);
+  Serial.print(" C  ");
+
+  Serial.print("Humidity: ");
+  Serial.println(humidity);
+
+  // -------- ส่ง ThingSpeak -------- //
+  ThingSpeak.setField(1, tvoc);
+  ThingSpeak.setField(2, eco2);
+  ThingSpeak.setField(3, temperature);
+  ThingSpeak.setField(4, humidity);
+
+  int status = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+
+  if (status == 200) {
+    Serial.println("ThingSpeak update successful");
+  } else {
+    Serial.println("ThingSpeak error: " + String(status));
+  }
+
+  delay(15000);   // ThingSpeak ต้อง ≥ 15 วินาที
+}
