@@ -4,10 +4,11 @@ model = YOLO("yolo11n.pt")
 
 # Train the model on the COCO8 dataset for 100 epochs
 train_results = model.train(
-    data="coco8.yaml",  # Path ของไฟล์ dataset
+    data="coco8.yaml",  # Path ของไฟล์ dataset {นามสกุลไฟล์ .yaml}
     epochs=100,  # จำนวนครี้งที่เทรน
     imgsz=640,  # ขนาดรูป
     device="cpu",  # Device to run on (e.g., 'cpu', 0, [0,1,2,3])
+    worker =0
 )
 
 # ตรวจสอบผลลัพของโมเดล
