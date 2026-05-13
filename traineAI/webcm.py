@@ -27,3 +27,6 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
+
+#Final_Score = (0.7 * Confidence_image) + (0.3 * Score_TVOC) 
